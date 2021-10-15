@@ -1,0 +1,244 @@
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import sys
+
+# return True if name is 1 to 11 characters, otherwise return False\
+# Think I got this one below-----
+def validate_name(name):
+  if 0 < name < 12: 
+    return True 
+  else:
+    return False
+# check that gender is M or F (case insensitive). Return True if it is, False if not
+# Think I figured this one out too -----
+def validate_gender(gender):
+  if 'M' == gender == 'F' == gender == 'm' == gender == 'f':  
+    return True
+  else:
+    return False
+# check that date_str can be converted to a date object and if it is within 100 years. Return True if it is, False if not.
+# Need help on this one
+def validate_dob(date_str):
+  try:
+    date_obj = datetime.strptime(date_str, '%m-%d-%Y')
+  except ValueError:
+    return False
+  else:
+    if (datetime.now() - relativedelta(years=100)).date() < date_obj.date() < datetime.now().date():
+      pass
+      #TODO write return statements for this validation date check (within 100 years of now)
+
+# return True if MBtype is correct, False if not. These are the possible types:
+#     'ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'
+# Think I figured this one out ------
+def validate_meyers_briggs(mb_type):
+  if mb_type ==  ('ISTJ', 'ISFJ', 'INFJ', 'INTJ', 'ISTP', 'ISFP', 'INFP', 'INTP', 'ESTP', 'ESFP', 'ENFP', 'ENTP', 'ESTJ', 'ESFJ', 'ENFJ', 'ENTJ'):
+    return True
+  else:
+    return False
+# return True if club is correct, False if not
+# Think I fixed this one switched True and False----
+def validate_social_club(club):
+  if club.upper() == ('XBX', 'EP', 'ON', 'XCD', 'PKA', 'NONE'):
+    return True
+  else:
+    return False
+
+# use this function to get input from users, passing the validation functions above
+# it returns a string that has been validated by the validation parameter
+def get_input(prompt, validation):
+  user_input = input(prompt)
+  while user_input.upper() != 'QUIT':
+    #TODO add the help message from the instructions when the user types "help" (case insensitive)
+    if user_input.upper() == 'HELP':
+      raise NotImplementedError
+    
+    if validation(user_input):
+      return user_input
+    else:
+      print("This does not look right...")
+      user_input = input(prompt)
+  else:
+    sys.exit() # this exits the program 
+
+def get_name():
+  return get_input("Enter a name (11 character max):", validate_name)
+
+def get_gender():
+  return get_input("Enter gender (M,F):", validate_gender).upper()
+
+def get_dob():
+  return datetime.strptime(get_input("Enter date of birth(MM-DD-YYYY):", validate_dob), '%m-%d-%Y')
+
+#TODO use the get_input function defined above to get a valid Myers Briggs type from the user
+# Think I completed this one----
+def get_meyers_briggs_type():
+  return get_input(validate_meyers_briggs)
+
+def get_social_club():
+  return get_input("Enter social club:", validate_social_club)
+
+# return a string of how compatible this couple will be according to their Myers-Briggs Types
+def meyers_briggs_compatibility(MB_Type1, MB_Type2):
+  red = 'Uh-Oh, Think This One Through'
+  yellow = 'It Could Work, But Not Ideal'
+  chartruce = 'One Sided Match'
+  green = 'It\'s Got a Good Chance'
+  blue = '0ften Listed as an Ideal Match'
+  compat = {
+    'INFP':{'INFP':green, 'ENFP':green, 'INFJ':green, 'ENFJ':blue, 'INTJ':green, 'ENTJ':blue, 'INTP':green, 'ENTP':green, 'ISFP':red, 'ESFP':red, 'ISTP':red, 'ESTP':red, 'ISFJ':red, 'ESFJ':red, 'ISTJ':red, 'ESTJ':red},
+    'ENFP':{'INFP':green, 'ENFP':green, 'INFJ':blue, 'ENFJ':green, 'INTJ':blue, 'ENTJ':green, 'INTP':green, 'ENTP':green, 'ISFP':red, 'ESFP':red, 'ISTP':red, 'ESTP':red, 'ISFJ':red, 'ESFJ':red, 'ISTJ':red, 'ESTJ':red},
+    'INFJ':{'INFP':green, 'ENFP':blue, 'INFJ':green, 'ENFJ':green, 'INTJ':green, 'ENTJ':green, 'INTP':green, 'ENTP':blue, 'ISFP':red, 'ESFP':red, 'ISTP':red, 'ESTP':red, 'ISFJ':red, 'ESFJ':red, 'ISTJ':red, 'ESTJ':red},
+    'ENFJ':{'INFP':blue, 'ENFP':green, 'INFJ':green, 'ENFJ':green, 'INTJ':green, 'ENTJ':green, 'INTP':green, 'ENTP':green, 'ISFP':blue, 'ESFP':red, 'ISTP':red, 'ESTP':red, 'ISFJ':red, 'ESFJ':red, 'ISTJ':red, 'ESTJ':red},
+    'INTJ':{'INFP':green, 'ENFP':blue, 'INFJ':green, 'ENFJ':green, 'INTJ':green, 'ENTJ':green, 'INTP':green, 'ENTP':blue, 'ISFP':chartruce, 'ESFP':chartruce, 'ISTP':chartruce, 'ESTP':chartruce, 'ISFJ':yellow, 'ESFJ':yellow, 'ISTJ':yellow, 'ESTJ':yellow},
+    'ENTJ':{'INFP':blue, 'ENFP':green, 'INFJ':green, 'ENFJ':green, 'INTJ':green, 'ENTJ':green, 'INTP':blue, 'ENTP':green, 'ISFP':chartruce, 'ESFP':chartruce, 'ISTP':chartruce, 'ESTP':chartruce, 'ISFJ':chartruce, 'ESFJ':chartruce, 'ISTJ':chartruce, 'ESTJ':chartruce},
+    'INTP':{'INFP':green, 'ENFP':green, 'INFJ':green, 'ENFJ':green, 'INTJ':green, 'ENTJ':blue, 'INTP':green, 'ENTP':green, 'ISFP':chartruce, 'ESFP':chartruce, 'ISTP':chartruce, 'ESTP':chartruce, 'ISFJ':yellow, 'ESFJ':yellow, 'ISTJ':yellow, 'ESTJ':blue},
+    'ENTP':{'INFP':green, 'ENFP':green, 'INFJ':blue, 'ENFJ':green, 'INTJ':blue, 'ENTJ':green, 'INTP':green, 'ENTP':green, 'ISFP':chartruce, 'ESFP':chartruce, 'ISTP':chartruce, 'ESTP':chartruce, 'ISFJ':yellow, 'ESFJ':yellow, 'ISTJ':yellow, 'ESTJ':yellow},
+    'ISFP':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':blue, 'INTJ':chartruce, 'ENTJ':chartruce, 'INTP':chartruce, 'ENTP':chartruce, 'ISFP':yellow, 'ESFP':yellow, 'ISTP':yellow, 'ESTP':yellow, 'ISFJ':chartruce, 'ESFJ':blue, 'ISTJ':chartruce, 'ESTJ':blue},
+    'ESFP':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':chartruce, 'ENTJ':chartruce, 'INTP':chartruce, 'ENTP':chartruce, 'ISFP':yellow, 'ESFP':yellow, 'ISTP':yellow, 'ESTP':yellow, 'ISFJ':blue, 'ESFJ':chartruce, 'ISTJ':blue, 'ESTJ':chartruce},
+    'ISTP':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':chartruce, 'ENTJ':chartruce, 'INTP':chartruce, 'ENTP':chartruce, 'ISFP':yellow, 'ESFP':yellow, 'ISTP':yellow, 'ESTP':yellow, 'ISFJ':chartruce, 'ESFJ':blue, 'ISTJ':chartruce, 'ESTJ':blue},
+    'ESTP':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':chartruce, 'ENTJ':chartruce, 'INTP':chartruce, 'ENTP':chartruce, 'ISFP':yellow, 'ESFP':yellow, 'ISTP':yellow, 'ESTP':yellow, 'ISFJ':blue, 'ESFJ':chartruce, 'ISTJ':blue, 'ESTJ':chartruce},
+    'ISFJ':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':yellow, 'ENTJ':chartruce, 'INTP':yellow, 'ENTP':yellow, 'ISFP':chartruce, 'ESFP':blue, 'ISTP':chartruce, 'ESTP':blue, 'ISFJ':green, 'ESFJ':green, 'ISTJ':green, 'ESTJ':green},
+    'ESFJ':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':yellow, 'ENTJ':chartruce, 'INTP':yellow, 'ENTP':yellow, 'ISFP':blue, 'ESFP':chartruce, 'ISTP':blue, 'ESTP':chartruce, 'ISFJ':green, 'ESFJ':green, 'ISTJ':green, 'ESTJ':green},
+    'ISTJ':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':yellow, 'ENTJ':chartruce, 'INTP':yellow, 'ENTP':yellow, 'ISFP':chartruce, 'ESFP':blue, 'ISTP':chartruce, 'ESTP':blue, 'ISFJ':green, 'ESFJ':green, 'ISTJ':green, 'ESTJ':green},
+    'ESTJ':{'INFP':red, 'ENFP':red, 'INFJ':red, 'ENFJ':red, 'INTJ':yellow, 'ENTJ':chartruce, 'INTP':blue, 'ENTP':yellow, 'ISFP':blue, 'ESFP':chartruce, 'ISTP':blue, 'ESTP':chartruce, 'ISFJ':green, 'ESFJ':green, 'ISTJ':green, 'ESTJ':green}
+    }
+  return compat[MB_Type1][MB_Type2]
+
+# return a string of how compatible the couple could be according to their zodiac signs
+def zodiac_compatibility(woman_sign, man_sign):
+  brown = 'Awkward.'
+  orange = 'Either Way.'
+  blue = 'Highest Match.'
+  purple = 'Easy Match.'
+  yellow = 'Least Compatible.'
+  compat = { # woman's sign is the outer key (on the left)
+    'Aries':{'Aries':orange, 'Taurus':brown, 'Gemini':purple, 'Cancer':brown, 'Leo':blue, 'Virgo':yellow, 'Libra':orange, 'Scorpio':brown, 'Sagittarius':purple, 'Capricorn':brown, 'Aquarius':purple, 'Pisces':yellow},
+    'Taurus':{'Aries':brown, 'Taurus':orange, 'Gemini':yellow, 'Cancer':purple, 'Leo':yellow, 'Virgo':purple, 'Libra':brown, 'Scorpio':orange, 'Sagittarius':purple, 'Capricorn':blue, 'Aquarius':yellow, 'Pisces':purple},
+    'Gemini':{'Aries':purple, 'Taurus':yellow, 'Gemini':orange, 'Cancer':brown, 'Leo':purple, 'Virgo':yellow, 'Libra':blue, 'Scorpio':brown, 'Sagittarius':orange, 'Capricorn':purple, 'Aquarius':blue, 'Pisces':yellow},
+    'Cancer':{'Aries':yellow, 'Taurus':purple, 'Gemini':brown, 'Cancer':orange, 'Leo':yellow, 'Virgo':purple, 'Libra':purple, 'Scorpio':blue, 'Sagittarius':brown, 'Capricorn':orange, 'Aquarius':yellow, 'Pisces':purple},
+    'Leo':{'Aries':purple, 'Taurus':yellow, 'Gemini':purple, 'Cancer':yellow, 'Leo':orange, 'Virgo':brown, 'Libra':purple, 'Scorpio':purple, 'Sagittarius':blue, 'Capricorn':brown, 'Aquarius':orange, 'Pisces':yellow},
+    'Virgo':{'Aries':yellow, 'Taurus':blue, 'Gemini':yellow, 'Cancer':purple, 'Leo':brown, 'Virgo':orange, 'Libra':brown, 'Scorpio':purple, 'Sagittarius':purple, 'Capricorn':blue, 'Aquarius':brown, 'Pisces':orange},
+    'Libra':{'Aries':orange, 'Taurus':brown, 'Gemini':blue, 'Cancer':yellow, 'Leo':purple, 'Virgo':yellow, 'Libra':orange, 'Scorpio':brown, 'Sagittarius':purple, 'Capricorn':brown, 'Aquarius':blue, 'Pisces':brown},
+    'Scorpio':{'Aries':brown, 'Taurus':orange, 'Gemini':brown, 'Cancer':purple, 'Leo':brown, 'Virgo':purple, 'Libra':brown, 'Scorpio':orange, 'Sagittarius':yellow, 'Capricorn':purple, 'Aquarius':yellow, 'Pisces':blue},
+    'Sagittarius':{'Aries':purple, 'Taurus':yellow, 'Gemini':orange, 'Cancer':yellow, 'Leo':purple, 'Virgo':yellow, 'Libra':purple, 'Scorpio':yellow, 'Sagittarius':orange, 'Capricorn':yellow, 'Aquarius':purple, 'Pisces':yellow},
+    'Capricorn':{'Aries':brown, 'Taurus':purple, 'Gemini':yellow, 'Cancer':orange, 'Leo':yellow, 'Virgo':blue, 'Libra':brown, 'Scorpio':purple, 'Sagittarius':yellow, 'Capricorn':orange, 'Aquarius':yellow, 'Pisces':purple},
+    'Aquarius':{'Aries':purple, 'Taurus':yellow, 'Gemini':purple, 'Cancer':yellow, 'Leo':orange, 'Virgo':brown, 'Libra':purple, 'Scorpio':yellow, 'Sagittarius':purple, 'Capricorn':yellow, 'Aquarius':orange, 'Pisces':yellow},
+    'Pisces':{'Aries':brown, 'Taurus':purple, 'Gemini':yellow, 'Cancer':blue, 'Leo':yellow, 'Virgo':orange, 'Libra':brown, 'Scorpio':purple, 'Sagittarius':yellow, 'Capricorn':purple, 'Aquarius':yellow, 'Pisces':orange}
+  }
+  return compat[woman_sign][man_sign]
+
+# return a string for what kind of a match this couple could be with two signs as parameters
+def chinese_zodiac_compatibility(sign1, sign2):
+  perfect = 'Perfect Match'
+  friend = 'good friend'
+  complimentary = 'Complimentary'
+  average = 'Average'
+  may_be_enemy = 'Good Match or Enemy'
+  worst = 'Worst Couple'
+  compat = {
+    'Rat':{'Rat':average, 'Ox':perfect, 'Tiger':average, 'Rabbit':perfect, 'Dragon':perfect, 'Snake':friend, 'Horse':worst, 'Sheep':may_be_enemy, 'Monkey':complimentary, 'Rooster':worst, 'Dog':complimentary, 'Pig':complimentary},
+    'Ox':{'Rat':perfect, 'Ox':average, 'Tiger':worst, 'Rabbit':complimentary, 'Dragon':worst, 'Snake':perfect, 'Horse':worst, 'Sheep':worst, 'Monkey':average, 'Rooster':perfect, 'Dog':complimentary, 'Pig':may_be_enemy},
+    'Tiger':{'Rat':average, 'Ox':worst, 'Tiger':worst, 'Rabbit':average, 'Dragon':complimentary, 'Snake':worst, 'Horse':perfect, 'Sheep':friend, 'Monkey':worst, 'Rooster':complimentary, 'Dog':complimentary, 'Pig':perfect},
+    'Rabbit':{'Rat':complimentary, 'Ox':complimentary, 'Tiger':average, 'Rabbit':average, 'Dragon':average, 'Snake':worst, 'Horse':average, 'Sheep':perfect, 'Monkey':perfect, 'Rooster':worst, 'Dog':perfect, 'Pig':perfect},
+    'Dragon':{'Rat':perfect, 'Ox':worst, 'Tiger':perfect, 'Rabbit':average, 'Dragon':friend, 'Snake':perfect, 'Horse':average, 'Sheep':worst, 'Monkey':complimentary, 'Rooster':complimentary, 'Dog':worst, 'Pig':friend},
+    'Snake':{'Rat':friend, 'Ox':complimentary, 'Tiger':worst, 'Rabbit':worst, 'Dragon':complimentary, 'Snake':worst, 'Horse':friend, 'Sheep':worst, 'Monkey':friend, 'Rooster':perfect, 'Dog':average, 'Pig':worst},
+    'Horse':{'Rat':worst, 'Ox':worst, 'Tiger':perfect, 'Rabbit':average, 'Dragon':average, 'Snake':friend, 'Horse':worst, 'Sheep':perfect, 'Monkey':average, 'Rooster':worst, 'Dog':average, 'Pig':complimentary},
+    'Sheep':{'Rat':may_be_enemy, 'Ox':worst, 'Tiger':friend, 'Rabbit':perfect, 'Dragon':worst, 'Snake':worst, 'Horse':perfect, 'Sheep':complimentary, 'Monkey':complimentary, 'Rooster':average, 'Dog':worst, 'Pig':perfect},
+    'Monkey':{'Rat':perfect, 'Ox':perfect, 'Tiger':worst, 'Rabbit':perfect, 'Dragon':perfect, 'Snake':friend, 'Horse':average, 'Sheep':complimentary, 'Monkey':friend, 'Rooster':average, 'Dog':complimentary, 'Pig':worst},
+    'Rooster':{'Rat':worst, 'Ox':perfect, 'Tiger':complimentary, 'Rabbit':worst, 'Dragon':perfect, 'Snake':perfect, 'Horse':worst, 'Sheep':average, 'Monkey':average, 'Rooster':worst, 'Dog':worst, 'Pig':average},
+    'Dog':{'Rat':complimentary, 'Ox':average, 'Tiger':complimentary, 'Rabbit':perfect, 'Dragon':worst, 'Snake':average, 'Horse':average, 'Sheep':worst, 'Monkey':complimentary, 'Rooster':worst, 'Dog':average, 'Pig':complimentary},
+    'Pig':{'Rat':complimentary, 'Ox':may_be_enemy, 'Tiger':perfect, 'Rabbit':perfect, 'Dragon':friend, 'Snake':worst, 'Horse':complimentary, 'Sheep':perfect, 'Monkey':worst, 'Rooster':average, 'Dog':complimentary, 'Pig':friend}
+  }
+  return compat[sign1][sign2]
+
+# TODO write an if statement to see if the clubs are the same
+# return "Club Harmony!!" if they are
+# return "Someone will have to shift allegiance for this to work" if not
+#Think I completed this one -----
+def social_club_compatibility(club1, club2):
+  if club1 == club2:
+    return "Club Harmony!!"
+  else:
+   return "Someone will have to shift allegiance for this to work"
+
+# add a parameter and a return statement to make this function return the appropriate unicode character
+def get_zodiac_symbol():
+  signs = {
+    'Capricorn':'\u2651', 'Aquarius':'\u2652', 'Pisces':'\u2653', 'Aries':'\u2648', 'Taurus':'\u2649',
+    'Gemini':'\u264A', 'Cancer':'\u264B', 'Leo':'\u264C', 'Virgo':'\u264D', 'Libra':'\u264E',
+    'Scorpio':'\u264F', 'Sagittarius':'\u2650'
+  }
+
+# this works well enough and mostly came from stackoverflow
+# https://stackoverflow.com/questions/3274597/how-would-i-determine-zodiac-astrological-star-sign-from-a-birthday-in-python
+def get-zodiac-from-date(date):
+  zodiacs = [(120, 'Capricorn'), (218, 'Aquarius'), (320, 'Pisces'), (420, 'Aries'), (521, 'Taurus'),
+           (621, 'Gemini'), (722, 'Cancer'), (823, 'Leo'), (923, 'Virgo'), (1023, 'Libra'),
+           (1122, 'Scorpio'), (1222, 'Sagittarius'), (1231, 'Capricorn')]
+  date_number = int("".join((str(date.date().month), '%02d' % date.date().day)))
+  for z in zodiacs:
+    if date_number <= z[0]:
+      return z[1]
+
+# the date parameter should be a datetime object. use its .year property to get the year as an integer
+# use the date parameter and the formula in the instructions to return a string name of the correct Chinese zodiac sign
+def get_chinese_zodiac_from_date(date):
+   chinese_zodiacs = ['Monkey', 'Rooster', 'Dog', 'Pig', 'Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Sheep']
+    return chinese_zodiacs[date.year % 12]
+
+# DO USER MENU LAST-----------
+def user_menu():
+  print(
+    'Welcome to the couple compatibility checker!!\n'
+    'At any point, you can type \'quit\' to end the program\n'
+    'or \'help\' for an explanation of the program' # This help feature is not inplemented yet
+    )
+  print()
+  print('Lets collect information for match candidate 1!')
+  candidate1_name = get_name()
+  candidate1_DOB = get_dob()
+  candidate1_gender = get_gender()
+  candidate1_MB_Type = get_meyers_briggs_type()
+  candidate1_social_club = get_social_club()
+  candidate1_zodiac = get_zodiac_from_date(candidate1_DOB)
+  #TODO add chinese zodiac
+
+  print('Lets collect information for match candidate 2!')
+  candidate2_name = get_name()
+  candidate2_DOB = get_dob()
+  candidate2_gender = get_gender()
+  candidate2_MB_Type = get_meyers_briggs_type()
+  candidate2_social_club = get_social_club()
+  candidate2_zodiac = get_zodiac_from_date(candidate2_DOB)
+  #TODO add chinese zodiac
+
+  print(candidate1_name, 'Stats')
+  print('Myers-Briggs type:', candidate1_MB_Type)
+  print('Social Club:', candidate1_social_club)
+  print('Zodiac Sign:', get_zodiac_symbol(candidate1_zodiac), candidate1_zodiac)
+  # TODO add chinese zodiac
+
+  print()
+
+  print(candidate2_name, 'Stats')
+  print('Myers-Briggs type:', candidate2_MB_Type)
+  print('Social Club:', candidate2_social_club)
+  print('Zodiac Sign:', get_zodiac_symbol(candidate2_zodiac), candidate2_zodiac)
+  # TODO add chinese zodiac
+
+  print()
+
+  print('How compatible is this couple?')
+  print('Looking at Myers-Briggs,',meyers_briggs_compatibility(candidate1_MB_Type, candidate2_MB_Type))
+
+  # TODO print the zodiac compatibility string after "According to the stars, "
+  # this one is gender-specific, so if the couple is not a M-F couple, our chart does not apply
+  # in that case, print "The stars do not say anything about this relationship"
+
+  # TODO add Chinese Zodiac conclusion
+  print('Looking at FHU social clubs,', social_club_compatibility(candidate1_social_club, candidate2_social_club))
+  #TODO add disclaimer from legal department at the end of output
+
+if __name__ == '__main__':
+    user_menu()
